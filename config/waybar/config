@@ -1,6 +1,4 @@
 {
-  "output": "HDMI-A-1",
-
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["custom/group"],
   
