@@ -1,9 +1,14 @@
 {
+
   "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["custom/group"],
+  "modules-center": [],
   
   "modules-right": [
     "custom/arrow-end",
+    "custom/netspeed",
+    "custom/arrow-netspeed",
+    "custom/space",
+    "custom/arrow-space",
     "pulseaudio", 
     "custom/arrow-audio",
     "cpu", 
@@ -14,10 +19,20 @@
     "clock"
   ],
 
-  "custom/group": {
-    "exec": "~/scripts/hyprGroup",
-    "interval": 1
-  }
+  "custom/netspeed": {
+    "exec": "~/scripts/netSpeedRead",
+    "interval": 30,
+    "return-type": "json",
+    "tooltip": true
+  },
+
+  "custom/space": {
+    "exec": "~/scripts/diskSpace",
+    "interval": 5,
+    "return-type": "json",
+    "tooltip": true
+  },
+
   "clock": {
     "interval": 1,
     "format": " {:%A %d %B %Y - %H:%M:%S}"
@@ -70,6 +85,14 @@
     "interval": 3600
   },
   "custom/arrow-end": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-space": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-netspeed": {
     "exec": "echo ''",
     "interval": 3600
   }

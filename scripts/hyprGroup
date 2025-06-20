@@ -1,0 +1,10 @@
+#!/bin/bash
+
+focused=$(hyprctl activewindow -j | jq -r '.title // "Unknown"')
+group=$(hyprctl activewindow -j | jq -r '.grouped')
+
+if [[ "$group" == "true" ]]; then
+    echo "{\"text\": \"$focused\", \"class\": \"grouped\"}"
+else
+    echo "{\"text\": \"\", \"class\": \"nogroup\"}"
+fi

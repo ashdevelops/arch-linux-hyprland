@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Fetch random quote from DummyJSON
+response=$(curl -s https://dummyjson.com/quotes/random)
+
+# Parse quote and author
+quote=$(echo "$response" | jq -r '.quote')
+author=$(echo "$response" | jq -r '.author')
+
+max_length=22
+if [ ${#quote} -gt $max_length ]; then
+  short_quote="${quote:0:$max_length}..."
+else
+  short_quote="$quote"
+fi
+
+# Output for Waybar (JSON format)
+echo "{\"text\": \"“$short_quote” — $author\", \"tooltip\": \"“$quote” — $author\"}"

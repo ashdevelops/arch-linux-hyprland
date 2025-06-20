@@ -1,0 +1,43 @@
+#!/bin/bash
+
+ICON=""
+
+# Function to get disk info for a given mount point
+get_disk_info() {
+    local MOUNT=$1
+    if ! df -h "$MOUNT" &>/dev/null; then
+        echo ""
+        return
+    fi
+
+    read -r _ _ USED TOTAL USED_PERC _ < <(df -h --output=source,size,used,avail,pcent,target "$MOUNT" | tail -n 1)
+    local PVAL=${USED_PERC%\%}
+
+    if [ "$PVAL" -ge 90 ]; then
+        COLOR="#ff3b30"
+    elif [ "$PVAL" -ge 70 ]; then
+        COLOR="#ff9100"
+    else
+        COLOR="#00e676"
+    fi
+
+    echo "{\"text\": \"$ICON $USED_PERC\", \"tooltip\": \"Disk usage at $MOUNT: $USED of $TOTAL\", \"percentage\": $PVAL, \"class\": \"$PVAL\", \"color\": \"$COLOR\"}"
+}
+
+# Get info for both mounts
+ROOT_JSON=$(get_disk_info "/")
+STORAGE_JSON=$(get_disk_info "/mnt/storage")
+
+# If one is missing (e.g., unmounted), just show the one that works
+if [[ -n "$ROOT_JSON" && -n "$STORAGE_JSON" ]]; then
+    # Merge both into one text field
+    TEXT=$(echo "$ROOT_JSON" | jq -r '.text')"/"$(echo "$STORAGE_JSON" | jq -r '.text')
+    TOOLTIP=$(echo "$ROOT_JSON" | jq -r '.tooltip')"\n"$(echo "$STORAGE_JSON" | jq -r '.tooltip')
+    echo "{\"text\": \"$TEXT\", \"tooltip\": \"$TOOLTIP\"}"
+elif [[ -n "$ROOT_JSON" ]]; then
+    echo "$ROOT_JSON"
+elif [[ -n "$STORAGE_JSON" ]]; then
+    echo "$STORAGE_JSON"
+else
+    echo '{"text": " N/A", "tooltip": "Drives not mounted", "color": "#ff3b30"}'
+fi

@@ -1,5 +1,7 @@
+on-notify=exec mpv $HOME/.config/mako/sound.mp3
+
+output=DP-2
 default-timeout=0
-output=HDMI-A-1
 max-visible=15
 font=JetBrainsMono Nerd Font 11
 background-color=#0e0e0ecc
@@ -9,3 +11,6 @@ border-size=3
 border-radius=4
 padding=15
 width=400
+
+[urgency=critical]
+background-color=#f51616

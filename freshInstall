@@ -6,7 +6,6 @@ HOME_DIR="/home/$USER"
 START_PATH=$(pwd)
 
 sudo pacman -Syu --noconfirm -- < pkglist
-sudo usermod -aG input,docker "$USER"
 
 git config --global user.name "ashdevelops"
 git config --global user.email "ash.smith.dev@gmail.com"
@@ -55,8 +54,20 @@ makepkg -si --noconfirm
 
 yay -S --noconfirm jetbrains-toolbox plex-media-server hyprlock hypridle wlogout docker-compose
 
+curl -Lo - https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz | tar -xz && sudo install speedtest /usr/local/bin/ && rm -f speedtest
+
 sudo systemctl enable --now plexmediaserver
 sudo systemctl enable --now docker
+
+sudo usermod -aG input,docker "$USER"
+
+sudo docker pull portainer/portainer-ce
+
+sudo docker run -d -p 9000:9000 --name portainer \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  portainer/portainer-ce
+
+sudo docker update --restart unless-stopped portainer
 
 CRON_JOB="0 */4 * * * /home/ash/scripts/plexDbBackup"
 crontab -l 2>/dev/null | grep -Fxq "$CRON_JOB" || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -

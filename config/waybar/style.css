@@ -1,8 +1,10 @@
-@define-color audio   #ff3b30;
-@define-color temp    #0099ff;
-@define-color memory  #00d98e;
-@define-color cpu     #0099ff;
-@define-color clock   #8c52ff;
+@define-color netspeed #1ea7fd;
+@define-color space    #f94f9f;
+@define-color audio    #faae2b;
+@define-color temp     #00c965;
+@define-color memory   #8e44ad;
+@define-color cpu      #00c965;
+@define-color clock    #5c6bc0;
 
 @define-color white #ffffff;
 @define-color black #000000;
@@ -18,28 +20,15 @@
     min-height: 0;
 }
 
-#clock, #custom-temp, #memory, #pulseaudio {
+#clock, 
+#custom-temp, 
+#memory, 
+#pulseaudio, 
+#custom-space,
+#custom-netspeed {
     padding-left: 10px;
     padding-right: 10px;
 }
-
-#custom-group {
-    font-size: 16px;
-    padding: 6px 10px;
-    background: #1f1f1f;
-    color: #f2f2f2;
-    border-radius: 6px;
-}
-
-#custom-group.grouped {
-    background: #44475a;
-    color: #ffffff;
-}
-
-#custom-group.nogroup {
-    background: transparent;
-}
-
 
 #workspaces {
     padding-left: 10px;
@@ -54,6 +43,13 @@ window#waybar {
 /* === Pulseaudio === */
 #pulseaudio {
     background-color: @audio;
+    color: black;
+}
+
+#custom-quote {
+    background-color: white;
+    color: black;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* === Custom Arrows === */
@@ -83,17 +79,37 @@ window#waybar {
 
 #custom-arrow-end {
     background-color: transparent;
-    color: @audio;
+    color: @netspeed;
     font-family: "JetBrainsMono Nerd Font";
 }
 
-/* === Temperature === */
+#custom-netspeed {
+    background-color: @netspeed;
+    color: #ffffff;
+}
+
+#custom-arrow-netspeed {
+    background-color: @netspeed;
+    color: @space;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+}
+
+#custom-space {
+    background-color: @space;
+    color: #ffffff;
+}
+
+#custom-arrow-space {
+    background-color: @space;
+    color: @audio;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+}
+
 #custom-temp {
     background-color: @temp;
     color: #ffffff;
 }
 
-/* === CPU === */
 #cpu {
     background-color: @cpu;
     color: #ffffff;
