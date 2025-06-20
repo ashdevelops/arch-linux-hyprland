@@ -3,6 +3,7 @@ set -euo pipefail
 
 USER="ash"
 HOME_DIR="/home/$USER"
+START_PATH=$(pwd)
 
 sudo pacman -Syu --noconfirm -- < pkglist
 sudo usermod -aG input,docker "$USER"
@@ -12,10 +13,11 @@ git config --global user.email "ash.smith.dev@gmail.com"
 
 echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf > /dev/null
 
-chsh -s /bin/zsh
+sudo chsh -s /bin/zsh
 
-export RUNZSH=no
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+if [[ ! -d "$HOME_DIR/.oh-my-zsh" ]]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
 mkdir -p "$HOME_DIR/scripts" "$HOME_DIR/recordings" "$HOME_DIR/wallpapers"
 cp -R scripts/* "$HOME_DIR/scripts/"
@@ -39,6 +41,13 @@ done <<< "$FSTAB_ENTRIES"
 sudo systemctl daemon-reexec
 sudo mount -a
 
+cp -R config/ "$HOME_DIR/.config"
+
+if [[ -e $HOME/yay ]]; then
+    sudo rm -rf $HOME/yay
+fi
+
+
 cd "$HOME_DIR"
 git clone https://aur.archlinux.org/yay.git
 cd yay
@@ -49,9 +58,8 @@ yay -S --noconfirm jetbrains-toolbox plex-media-server hyprlock hypridle wlogout
 sudo systemctl enable --now plexmediaserver
 sudo systemctl enable --now docker
 
-cp -R config/ "$HOME_DIR/.config"
-
 CRON_JOB="0 */4 * * * /home/ash/scripts/plexDbBackup"
 crontab -l 2>/dev/null | grep -Fxq "$CRON_JOB" || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
 
+cd $START_PATH
 cat postInstall
