@@ -2,7 +2,7 @@
   "output": "HDMI-A-1",
 
   "modules-left": ["hyprland/workspaces"],
-  "modules-center": [],
+  "modules-center": ["custom/group"],
   
   "modules-right": [
     "custom/arrow-end",
@@ -16,6 +16,10 @@
     "clock"
   ],
 
+  "custom/group": {
+    "exec": "~/scripts/hyprGroup",
+    "interval": 1
+  }
   "clock": {
     "interval": 1,
     "format": " {:%A %d %B %Y - %H:%M:%S}"
