@@ -1,0 +1,23 @@
+#!/bin/bash
+
+direction="$1"
+amount=40
+
+is_floating=$(hyprctl activewindow -j | jq -r '.floating')
+
+if [[ "$is_floating" == "true" ]]; then
+  if [ "$direction" = "up" ]; then
+    hyprctl dispatch moveactive 0 -$amount
+  elif [ "$direction" = "down" ]; then
+    hyprctl dispatch moveactive 0 $amount
+  elif [ "$direction" = "left" ]; then
+    hyprctl dispatch moveactive -$amount 0
+  elif [ "$direction" = "right" ]; then
+    hyprctl dispatch moveactive $amount 0
+  else
+    echo "Invalid direction: $direction"
+  fi
+else
+  short_direction="${direction:0:1}"
+  hyprctl dispatch movewindow "$short_direction"
+fi

@@ -1,65 +1,8 @@
-#!/bin/bash
-set -euo pipefail
-IFS=$'\n\t'
+Welcome to your new system.
 
-USER="ash"
-HOME_DIR="/home/$USER"
+Most things have been done for you, but theres a few minor changes you need to do.
 
-sudo pacman -Syu --noconfirm -- < pkglist
-sudo usermod -aG input "$USER"
+1. JetBrains Toolbox Applications
+2. Plex Media Server Setup
 
-git config --global user.name "ashdevelops"
-git config --global user.email "ash.smith.dev@gmail.com"
-
-echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf
-
-chsh -s /bin/zsh
-
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-mkdir -p "$HOME_DIR/scripts" "$HOME_DIR/recordings"
-
-cp -R wallpapers/ "$HOME_DIR/wallpapers"
-cp -R scripts/ "$HOME_DIR/scripts"
-cp .zshrc $HOME
-
-sudo chmod +x "$HOME_DIR/scripts/"*
-
-for dir in /mnt/media /mnt/backups /mnt/storage; do
-    sudo mkdir -p "$dir"
-done
-
-FSTAB_ENTRIES=$(cat << 'EOF'
-//192.168.0.50/media    /mnt/media     cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=ash,gid=ash,dir_mode=0777,file_mode=0666    0    0
-//192.168.0.50/backups  /mnt/backups   cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=ash,gid=ash,dir_mode=0777,file_mode=0666    0    0
-UUID=6b904ef3-eae5-4981-bcc0-9dfea493613b    /mnt/storage    ext4    defaults,noatime                                                                      0    2
-EOF
-)
-
-echo "$FSTAB_ENTRIES" | while read -r line; do
-    grep -qF "$line" /etc/fstab || echo "$line" | sudo tee -a /etc/fstab > /dev/null
-done
-
-systemctl daemon-reload
-sudo mount -a
-
-cd $HOME
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-
-yay -S jetbrains-toolbox plex-media-server hyprlock hypridle wlogout
-
-sudo systemctl enable --now plexmediaserver
-sudo systemctl enable --now docker
-
-sudo usermod -aG docker $USER
-
-cp -R config/ $HOME/.config
-
-cat postInstall
-
-# TODO 
-# TODO; YAY
-# TODO; aichat
-# TODO; idfk
+Other than the obvious (re-logging in to everything), you're good to go!

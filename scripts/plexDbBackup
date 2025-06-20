@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SRC_DIR="/var/lib/plex/Plex Media Server/Plug-in Support"
+BACKUP_DIR="/mnt/backups"
+TIMESTAMP=$(date +'%d-%m-%Y_%H-%M')
+ZIP_FILE="plex_backup_$TIMESTAMP.zip"
+
+echo "Creating backup..."
+zip -r "/tmp/$ZIP_FILE" "$SRC_DIR"
+
+if [ $? -eq 0 ]; then
+    echo "Backup created successfully: /tmp/$ZIP_FILE"
+    mv "/tmp/$ZIP_FILE" "$BACKUP_DIR"
+    if [ $? -eq 0 ]; then
+        echo "Backup moved to $BACKUP_DIR"
+        ls -1t "$BACKUP_DIR"/*.zip | tail -n +85 | xargs -r rm --
+    else
+        echo "Failed to move backup to $BACKUP_DIR"
+        exit 2
+    fi
+else
+    echo "Failed to create backup"
+    exit 1
+fi
