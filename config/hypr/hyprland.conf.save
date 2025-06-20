@@ -1,0 +1,33 @@
+exec-once = kitty
+
+bind=ALT,RETURN,exec,kitty
+bind=ALT,Q,killactive
+bind=ALT,1,workspace,1
+bind=ALT,2,workspace,2
+bind=ALT,3,workspace,3
+bind=ALT_SHIFT,1,movetoworkspace,1
+bind=ALT_SHIFT,2,movetoworkspace,2
+bind=ALT_SHIFT,3,movetoworkspace,3
+bind=ALT,TAB,cyclenext
+bind=ALT_SHIFT,TAB,cyclenext
+bind=ALT_SHIFT,SPACE,togglefloating
+bind=ALT,R,exec,hyprctl reload
+bind=ALT,LEFT,movefocus,l
+bind=ALT,RIGHT,movefocus,r
+bind=ALT,UP,movefocus,u
+bind=ALT,DOWN,movefocus,d
+bind=ALT,D,exec,wofi --show drun
+bind=ALT,R,exec,wofi --show run
+bind=ALT,W,exec,wofi --show window
+bind=ALT,S,exec,wofi --show ssh
+
+input {
+    kb_layout = gb,
+    kb_model = pc105
+}
+
+monitor = HDMI-A-1, 3840x2160@60, -2560x0, 1.5    # Left at -2560
+monitor = DP-2, 3840x2160@60, 0x0, 1.5           # Center at 0
+monitor = DP-1, 3840x2160@60, 2560x0, 1.5        # Right at +2560
+
+

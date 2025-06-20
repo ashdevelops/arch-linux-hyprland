@@ -1,0 +1,74 @@
+{
+  "output": "HDMI-A-1",
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": [],
+  
+  "modules-right": [
+    "custom/arrow-end",
+    "pulseaudio", 
+    "custom/arrow-audio",
+    "cpu", 
+    "custom/temp", 
+    "custom/arrow-cpu",
+    "memory", 
+    "custom/arrow-memory",
+    "clock"
+  ],
+
+  "clock": {
+    "interval": 1,
+    "format": " {:%A %d %B %Y - %H:%M:%S}"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": " muted",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "scroll-step": 5,
+    "on-click": "pamixer -t",
+    "tooltip": true
+  },
+
+  "custom/temp": {
+    "exec": "~/scripts/cpuTemp",
+    "interval": 1,
+    "return-type": "json",
+    "tooltip": true
+  },
+
+  "cpu": {
+    "format": " {usage}%",
+    "tooltip": true,
+    "interval": 2
+  },
+
+  "memory": {
+    "format": " {used:0.1f}G",
+    "tooltip": true,
+    "interval": 5
+  },
+
+  "custom/arrow-audio": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-temp": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-cpu": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-memory": {
+    "exec": "echo ''",
+    "interval": 3600
+  },
+  "custom/arrow-end": {
+    "exec": "echo ''",
+    "interval": 3600
+  }
+}

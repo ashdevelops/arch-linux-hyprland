@@ -1,0 +1,141 @@
+@define-color audio   #ff3b30;
+@define-color temp    #0099ff;
+@define-color memory  #00d98e;
+@define-color cpu     #0099ff;
+@define-color clock   #8c52ff;
+
+@define-color white #ffffff;
+@define-color black #000000;
+@define-color workspace-focus #c9545d;
+@define-color net-disconnected #f53c3c;
+
+/* === Global Styles === */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 20px;
+    min-height: 0;
+}
+
+#clock, #custom-temp, #memory, #pulseaudio {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#workspaces {
+    padding-left: 10px;
+}
+
+/* === Waybar Window === */
+window#waybar {
+    background: @black;
+    color: @white;
+}
+
+/* === Pulseaudio === */
+#pulseaudio {
+    background-color: @audio;
+}
+
+/* === Custom Arrows === */
+#custom-arrow-audio {
+    background-color: @audio;
+    color: @temp;
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+#custom-arrow-temp {
+    background-color: @temp;
+    color: @cpu;
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+#custom-arrow-cpu {
+    background-color: @cpu;
+    color: @memory;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+}
+
+#custom-arrow-memory {
+    background-color: @memory;
+    color: @clock;
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+#custom-arrow-end {
+    background-color: transparent;
+    color: @audio;
+    font-family: "JetBrainsMono Nerd Font";
+}
+
+/* === Temperature === */
+#custom-temp {
+    background-color: @temp;
+    color: #ffffff;
+}
+
+/* === CPU === */
+#cpu {
+    background-color: @cpu;
+    color: #ffffff;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+}
+
+#memory {
+    background-color: @memory;
+    color: #ffffff;
+}
+
+#clock {
+    background-color: @clock;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: @white;
+    border-top: 2px solid transparent;
+}
+
+#workspaces button.focused {
+    color: @workspace-focus;
+    border-top: 2px solid @workspace-focus;
+}
+
+#window {
+    font-weight: bold;
+}
+
+#mode {
+    background: #64727D;
+    border-bottom: 3px solid @white;
+}
+
+#battery icon {
+    color: @audio;
+}
+
+#battery.warning:not(.charging) {
+    color: @white;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* === Network === */
+#network.disconnected {
+    background: @net-disconnected;
+}
+
+/* === Animation === */
+@keyframes blink {
+    to {
+        background-color: @white;
+        color: @black;
+    }
+}
