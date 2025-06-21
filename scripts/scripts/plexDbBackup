@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SRC_DIR="/var/lib/plex/Plex Media Server/Plug-in Support"
-BACKUP_DIR="/mnt/backups/plex"
+BACKUP_DIR="/mnt/backups"
 TIMESTAMP=$(date +'%d-%m-%Y_%H-%M')
 ZIP_FILE="plex_backup_$TIMESTAMP.zip"
 

@@ -11,6 +11,7 @@ git config --global user.name "ashdevelops"
 git config --global user.email "ash.smith.dev@gmail.com"
 
 echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf > /dev/null
+echo 'QT_SCALE_FACTOR=1.5' | sudo tee -a /etc/environment
 
 sudo chsh -s /bin/zsh
 
@@ -71,6 +72,18 @@ sudo docker update --restart unless-stopped portainer
 
 CRON_JOB="0 */4 * * * /home/ash/scripts/plexDbBackup"
 crontab -l 2>/dev/null | grep -Fxq "$CRON_JOB" || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+
+gsettings set org.gnome.desktop.peripherals.keyboard delay 250
+
+mkdir -p ~/.local/share/nemo/actions && cat > ~/.local/share/nemo/actions/open-in-kitty.nemo_action << 'EOF'
+[Nemo Action]
+Name=Open in Kitty
+Comment=Open this folder in the Kitty terminal
+Exec=kitty --directory="%F"
+Icon-Name=utilities-terminal
+Selection=any
+Extensions=dir;
+EOF
 
 cd $START_PATH
 cat postInstall

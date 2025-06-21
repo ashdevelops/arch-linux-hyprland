@@ -1,0 +1,11 @@
+#!/bin/bash
+
+WALLPAPER_DIR="$HOME/wallpapers"
+MONITORS=$(hyprctl monitors | grep -oP '^Monitor\s+\K[\w-]+')
+WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
+
+for MONITOR in $MONITORS; do    
+    swaybg -i "$WALLPAPER" -m fill -o "$MONITOR" &>/dev/null &
+done
+
+exit 0

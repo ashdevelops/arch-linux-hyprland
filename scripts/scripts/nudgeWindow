@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Validate input
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <dx> <dy>" >&2
+    exit 1
+fi
+
+DX=$1
+DY=$2
+
+# Get window info
+info=$(hyprctl activewindow -j)
+[ -z "$info" ] && { echo "No active window."; exit 1; }
+
+# Force floating if needed
+floating=$(echo "$info" | jq .floating)
+if [ "$floating" != "true" ]; then
+    hyprctl dispatch setfloating active true
+    sleep 0.1
+    info=$(hyprctl activewindow -j)  # Re-fetch
+fi
+
+# Get window position and size
+x=$(echo "$info" | jq .at[0])
+y=$(echo "$info" | jq .at[1])
+w=$(echo "$info" | jq .size[0])
+h=$(echo "$info" | jq .size[1])
+x_int=$(printf "%.0f" "$x")
+y_int=$(printf "%.0f" "$y")
+
+# Get monitor dimensions
+mon_id=$(echo "$info" | jq .monitor)
+mon_info=$(hyprctl monitors -j | jq ".[] | select(.id == $mon_id)")
+mon_x=$(echo "$mon_info" | jq .x)
+mon_y=$(echo "$mon_info" | jq .y)
+mon_w=$(echo "$mon_info" | jq .width)
+mon_h=$(echo "$mon_info" | jq .height)
+
+# Apply offset
+newx=$((x_int + DX))
+newy=$((y_int + DY))
+
+# Clamp to monitor bounds
+maxx=$((mon_x + mon_w - w))
+maxy=$((mon_y + mon_h - h))
+[ "$newx" -lt "$mon_x" ] && newx=$mon_x
+[ "$newx" -gt "$maxx" ] && newx=$maxx
+[ "$newy" -lt "$mon_y" ] && newy=$mon_y
+[ "$newy" -gt "$maxy" ] && newy=$maxy
+
+# Move window
+hyprctl dispatch moveactive "$newx" "$newy"

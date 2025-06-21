@@ -1,0 +1,9 @@
+#!/bin/bash
+
+FILE="/tmp/waybar-speedtest.json"
+
+if [ -f "$FILE" ]; then
+    cat "$FILE"
+else
+    echo '{"text": "↓ N/A ↑ N/A", "tooltip": "Speedtest data not available"}'
+fi

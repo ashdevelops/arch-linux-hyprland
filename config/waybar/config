@@ -5,8 +5,6 @@
   
   "modules-right": [
     "custom/arrow-end",
-    "custom/netspeed",
-    "custom/arrow-netspeed",
     "custom/space",
     "custom/arrow-space",
     "pulseaudio", 
@@ -35,7 +33,7 @@
 
   "clock": {
     "interval": 1,
-    "format": " {:%A %d %B %Y - %H:%M:%S}"
+    "format": " {:%a %d %B - %H:%M:%S}"
   },
 
   "pulseaudio": {
@@ -63,7 +61,7 @@
   },
 
   "memory": {
-    "format": " {used:0.1f}G",
+    "format": " {used:0.1f}G - {percentage}%",
     "tooltip": true,
     "interval": 5
   },
@@ -89,10 +87,6 @@
     "interval": 3600
   },
   "custom/arrow-space": {
-    "exec": "echo ''",
-    "interval": 3600
-  },
-  "custom/arrow-netspeed": {
     "exec": "echo ''",
     "interval": 3600
   }

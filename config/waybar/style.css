@@ -1,8 +1,7 @@
-@define-color netspeed #1ea7fd;
 @define-color space    #f94f9f;
 @define-color audio    #faae2b;
 @define-color temp     #00c965;
-@define-color memory   #8e44ad;
+@define-color memory   #1ea7fd;
 @define-color cpu      #00c965;
 @define-color clock    #5c6bc0;
 
@@ -79,7 +78,7 @@ window#waybar {
 
 #custom-arrow-end {
     background-color: transparent;
-    color: @netspeed;
+    color: @space;
     font-family: "JetBrainsMono Nerd Font";
 }
 
@@ -128,15 +127,15 @@ window#waybar {
 }
 
 #workspaces button {
-    padding: 0 5px;
-    background: transparent;
-    color: @white;
-    border-top: 2px solid transparent;
+  padding: 0 5px;
+  background: #222;      /* Default background */
+  color: #ccc;           /* Default text color */
+  border: none;
 }
 
-#workspaces button.focused {
-    color: @workspace-focus;
-    border-top: 2px solid @workspace-focus;
+#workspaces button.active {
+  background: #5294e2;   /* Background for active workspace */
+  color: #fff;           /* Text color for active workspace */
 }
 
 #window {
