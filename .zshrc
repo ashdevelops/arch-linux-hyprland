@@ -1,12 +1,18 @@
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="random"
 
+export AHG="/mnt/storage/arch-linux-hyprland"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-alias hypredit='nano /home/ash/.config/hypr/hyprland.conf'
+vim() {
+  command nvim "$@"
+}
+
+alias hypredit='nvim /home/ash/.config/hypr/hyprland.conf'
 alias copy='wl-copy'
+alias yay='yay --noconfirm'
 
 gitacp() {
   if [ -z "$1" ]; then
@@ -17,3 +23,10 @@ gitacp() {
   git commit -m "$1"
   git push
 }
+
+subl() {
+  command subl -n "$@"
+}
+
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh

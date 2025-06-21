@@ -84,5 +84,10 @@ Selection=any
 Extensions=dir;
 EOF
 
+mkdir -p ~/.local/share/applications && sed 's|Exec=nemo|Exec=env GDK_DPI_SCALE=1.8 dbus-launch nemo|g' /usr/share/applications/nemo.desktop > ~/.local/share/applications/nemo.desktop
+
+echo -e '\nif [[ -z $DISPLAY && $(tty) == /dev/tty1 ]]; then\n  exec hyprland\nfi' >> ~/.zprofile
+
+
 cd $START_PATH
 cat postInstall
