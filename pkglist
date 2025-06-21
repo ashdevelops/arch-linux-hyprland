@@ -29,3 +29,5 @@ libimobiledevice
 celluloid
 discord
 docker
+fzf
+wl-clip-persist
