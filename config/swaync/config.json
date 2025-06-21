@@ -1,0 +1,10 @@
+{
+  "notification-center": {
+    "enabled": true
+  },
+  "notifications": {
+    "history-size": 100
+  },
+
+  "style": "~/.config/swaync/style.css"
+}
