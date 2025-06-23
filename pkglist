@@ -10,6 +10,9 @@ playerctl
 nemo
 gvfs
 zsh
+zsh-syntax-highlighting 
+zsh-autosuggestions 
+zsh-history-substring-search
 obs-studio
 docker
 qbittorrent
@@ -31,3 +34,10 @@ discord
 docker
 fzf
 wl-clip-persist
+xdg-desktop-portal-wlr
+rsync
+gvfs 
+gvfs-mtp 
+gvfs-gphoto2 
+gvfs-smb 
+gvfs-nfs 
