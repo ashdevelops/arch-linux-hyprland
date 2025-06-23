@@ -96,5 +96,7 @@ sudo modprobe hid_playstation
 sudo groupadd uinput
 sudo usermod -aG input,uinput $USER
 
+echo -e '#!/bin/bash\nexec nvim -n "$@"' | sudo tee /usr/local/bin/nano > /dev/null && sudo chmod +x /usr/local/bin/nano
+
 cd $START_PATH
 cat postInstall

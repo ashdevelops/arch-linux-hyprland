@@ -14,7 +14,7 @@ alias hypredit='nvim /home/ash/.config/hypr/hyprland.conf'
 alias copy='wl-copy'
 alias yay='yay --noconfirm'
 
-gitacp() {
+gacp() {
   if [ -z "$1" ]; then
     echo "Usage: gitacp \"commit message\""
     return 1
@@ -26,6 +26,10 @@ gitacp() {
 
 subl() {
   command subl -n "$@"
+}
+
+nano() {
+  command nvim -n "$@"
 }
 
 source /usr/share/fzf/key-bindings.zsh
