@@ -1,9 +1,13 @@
-@define-color space    #f94f9f;
-@define-color audio    #faae2b;
-@define-color temp     #00c965;
-@define-color memory   #1ea7fd;
-@define-color cpu      #00c965;
-@define-color clock    #5c6bc0;
+@define-color space    #ff5ca7;
+@define-color audio    #ffc043;
+@define-color temp     #33cc66;
+@define-color memory   #1f8ced;
+@define-color cpu      #33cc66;
+@define-color clock    #3f51b5;
+
+#clock {
+    color: white;
+}
 
 @define-color white #ffffff;
 @define-color black #000000;
@@ -24,7 +28,9 @@
 #memory, 
 #pulseaudio, 
 #custom-space,
-#custom-netspeed {
+#custom-netspeed,
+#workspaces
+#window {
     padding-left: 10px;
     padding-right: 10px;
 }

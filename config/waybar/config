@@ -1,7 +1,7 @@
 {
 
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": [],
+  "modules-left": ["hyprland/workspaces", "custom/spacer", "hyprland/window"],
+  "modules-center": ["custom/power"],
   
   "modules-right": [
     "custom/arrow-end",
@@ -14,7 +14,7 @@
     "custom/arrow-cpu",
     "memory", 
     "custom/arrow-memory",
-    "clock"
+    "clock",
   ],
 
   "custom/netspeed": {
@@ -29,6 +29,11 @@
     "interval": 5,
     "return-type": "json",
     "tooltip": true
+  },
+  
+  "custom/spacer": {
+    "format": " ",
+    "interval": 3600
   },
 
   "clock": {
@@ -70,22 +75,27 @@
     "exec": "echo ''",
     "interval": 3600
   },
+  
   "custom/arrow-temp": {
     "exec": "echo ''",
     "interval": 3600
   },
+  
   "custom/arrow-cpu": {
     "exec": "echo ''",
     "interval": 3600
   },
+  
   "custom/arrow-memory": {
     "exec": "echo ''",
     "interval": 3600
   },
+  
   "custom/arrow-end": {
     "exec": "echo ''",
     "interval": 3600
   },
+
   "custom/arrow-space": {
     "exec": "echo ''",
     "interval": 3600

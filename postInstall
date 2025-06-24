@@ -11,6 +11,10 @@ Most things have been done for you, but theres a few minor changes you need to d
 	Initialize libraries
 3. Firefox Setup
 	Install Vimium
-	Enable Dark Theme
+	Enable Dark Theme]
+4. Research Your Tools
+	Zoxide
+	fzf
+	nvim
 
 You're good to go!
