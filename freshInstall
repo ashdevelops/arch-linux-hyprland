@@ -24,6 +24,7 @@ mkdir -p "$HOME_DIR/scripts" "$HOME_DIR/recordings" "$HOME_DIR/wallpapers"
 cp -R scripts/* "$HOME_DIR/scripts/"
 cp -R wallpapers/* "$HOME_DIR/wallpapers/"
 cp .zshrc "$HOME_DIR/"
+cp .gitconfig "$HOME_DIR/"
 sudo chmod +x "$HOME_DIR/scripts/"*
 
 sudo mkdir -p /mnt/media /mnt/backups /mnt/storage
@@ -97,6 +98,16 @@ sudo groupadd uinput
 sudo usermod -aG input,uinput $USER
 
 echo -e '#!/bin/bash\nexec nvim -n "$@"' | sudo tee /usr/local/bin/nano > /dev/null && sudo chmod +x /usr/local/bin/nano
+sudo sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)/\1 panic=30/' /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+sudo mkdir -p /var/log/journal
+sudo systemd-tmpfiles --create --prefix /var/log/journal
+sudo systemctl restart systemd-journald
+sudo systemctl enable --now auditd
+
+xdg-mime default nemo.desktop inode/directory
+
+mkdir -p ~/.config/nvim/lua/plugins && git clone https://github.com/folke/lazy.nvim ~/.local/share/nvim/lazy/lazy.nvim && echo 'return {{"junegunn/fzf", build = "./install --all"},{"junegunn/fzf.vim"}}' > ~/.config/nvim/lua/plugins/fzf.lua && echo 'vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")\nrequire("lazy").setup("plugins")' > ~/.config/nvim/init.lua
 
 cd $START_PATH
 cat postInstall
