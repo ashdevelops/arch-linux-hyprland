@@ -1,20 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
+FILE="/etc/nas-credentials"
+if [ ! -f "$FILE" ]; then
+  echo "Error: File '$FILE' not found!"
+  echo "You need this to connect to your NAS"
+  echo "Please create it in INI format like below"
+  echo "username=..."
+  echo "password=..."
+  exit 1
+fi
+
 USER="ash"
 HOME_DIR="/home/$USER"
 START_PATH=$(pwd)
 
-sudo pacman -Syu --noconfirm -- < pkglist
+if [ "$(whoami)" != "$USER" ]; then
+  echo "Error: This script must be run as user '$USER'."
+  exit 1
+fi
 
-git config --global user.name "ashdevelops"
-git config --global user.email "ash.smith.dev@gmail.com"
+sudo pacman -Sy --noconfirm $(<pkglist)
 
 echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf > /dev/null
 echo 'QT_SCALE_FACTOR=1.5' | sudo tee -a /etc/environment
 echo 'STEAM_FORCE_DESKTOPUI_SCALING=1.5' | sudo tee -a /etc/environment
-
-sudo chsh -s /bin/zsh
 
 if [[ ! -d "$HOME_DIR/.oh-my-zsh" ]]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -23,8 +33,8 @@ fi
 mkdir -p "$HOME_DIR/scripts" "$HOME_DIR/recordings" "$HOME_DIR/wallpapers"
 cp -R scripts/* "$HOME_DIR/scripts/"
 cp -R wallpapers/* "$HOME_DIR/wallpapers/"
-cp .zshrc "$HOME_DIR/"
 cp .gitconfig "$HOME_DIR/"
+cp nextcloud/docker-compose.yml "$HOME_DIR/"
 sudo chmod +x "$HOME_DIR/scripts/"*
 
 sudo mkdir -p /mnt/media /mnt/backups /mnt/storage
@@ -43,25 +53,40 @@ done <<< "$FSTAB_ENTRIES"
 sudo systemctl daemon-reexec
 sudo mount -a
 
-cp -R config/ "$HOME_DIR/.config"
+cp -R config/* "$HOME_DIR/.config/"
 
-if [[ -e $HOME/yay ]]; then
-    sudo rm -rf $HOME/yay
+if [[ -e $HOME_DIR/yay ]]; then
+    sudo rm -rf $HOME_DIR/yay
 fi
 
 cd "$HOME_DIR"
 git clone https://aur.archlinux.org/yay.git
 cd yay
+
 makepkg -si --noconfirm
 
-yay -S --noconfirm jetbrains-toolbox plex-media-server hyprlock hypridle wlogout docker-compose neovim game-devices-udev
+yay -S --noconfirm \
+    jetbrains-toolbox \
+    plex-media-server \
+    hyprlock \
+    hypridle \
+    wlogout \
+    docker-compose \
+    neovim \
+    game-devices-udev \
+    neofetch \
+    wlroots \
+    ttf-firacode-nerd
 
 curl -Lo - https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz | tar -xz && sudo install speedtest /usr/local/bin/ && rm -f speedtest
 
 sudo systemctl enable --now plexmediaserver
 sudo systemctl enable --now docker
 
+chsh -s /bin/zsh
 sudo usermod -aG input,docker "$USER"
+
+sudo docker ps -a --format '{{.Names}}' | grep -q '^portainer$' && sudo docker stop portainer && sudo docker rm portainer
 
 sudo docker pull portainer/portainer-ce
 
@@ -94,20 +119,54 @@ sudo sed -i '/\[multilib\]/,/Include/s/^#//' /etc/pacman.conf && sudo pacman -Sy
 
 sudo modprobe hid_playstation
 
-sudo groupadd uinput
+getent group uinput || sudo groupadd uinput
 sudo usermod -aG input,uinput $USER
 
 echo -e '#!/bin/bash\nexec nvim -n "$@"' | sudo tee /usr/local/bin/nano > /dev/null && sudo chmod +x /usr/local/bin/nano
 sudo sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)/\1 panic=30/' /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg
 
+cp "$START_PATH/.zshrc" "$HOME_DIR/"
+
 sudo mkdir -p /var/log/journal
 sudo systemd-tmpfiles --create --prefix /var/log/journal
 sudo systemctl restart systemd-journald
-sudo systemctl enable --now auditd
+sudo systemctl enable auditd
 
 xdg-mime default nemo.desktop inode/directory
 
 mkdir -p ~/.config/nvim/lua/plugins && git clone https://github.com/folke/lazy.nvim ~/.local/share/nvim/lazy/lazy.nvim && echo 'return {{"junegunn/fzf", build = "./install --all"},{"junegunn/fzf.vim"}}' > ~/.config/nvim/lua/plugins/fzf.lua && echo 'vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/lazy/lazy.nvim")\nrequire("lazy").setup("plugins")' > ~/.config/nvim/init.lua
 
+cp -R /mnt/backups/.ssh ~/ 
+
+#xargs -a hostsBlock -I{} echo "127.0.0.1 {}" | sudo tee -a /etc/hosts > /dev/null
+
+mkdir -p ~/nextcloud/html
+sudo chown -R 33:33 ~/nextcloud/html
+
+mkdir -p ~/nextcloud/db
+sudo chown -R 100:101 ~/nextcloud/db
+
+source /mnt/backups/nextcloud/.env
+cd ~/nextcloud 
+
+sudo docker-compose up -d
+
+(crontab -l 2>/dev/null; echo "0 * * * * rsync -a --delete /home/ash/nextcloud/ /mnt/backups/nextcloud/") | crontab -
+
+echo "Almost there..."
+sudo docker exec -i $(sudo docker ps --filter "ancestor=nextcloud" --format "{{.Names}}" | head -n1) \
+sh -c 'FILE="/var/www/html/config/config.php"; \
+[ -f "$FILE" ] || echo "<?php\n\$CONFIG = array (\n  '\''trusted_domains'\'' => array (),\n);" > "$FILE"; \
+sed -i "/'\''trusted_domains'\'' => *array (/a\
+    1 => '\''192.168.0.57'\'',\
+    2 => '\''192.168.0.57:8080'\''," "$FILE"'
+
+
+speedtest
+
+echo "===================================================================================="
+echo ""
+neofetch
+
 cd $START_PATH
-cat postInstall
+nvim postInstall

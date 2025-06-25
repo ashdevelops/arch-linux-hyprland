@@ -3,9 +3,8 @@ git
 hyprland
 xdg-desktop-portal-hyprland
 xdg-desktop-portal
-xwayland
+xorg-xwayland
 waybar
-wlroots
 playerctl
 nemo
 gvfs
@@ -14,6 +13,7 @@ zsh-syntax-highlighting
 zsh-autosuggestions 
 zsh-history-substring-search
 obs-studio
+nginx
 docker
 qbittorrent
 yt-dlp
@@ -25,11 +25,9 @@ bluez-utils
 kitty
 mako
 ranger
-neofetch
 jq
 usbmuxd
 libimobiledevice
-celluloid
 discord
 docker
 fzf
@@ -46,3 +44,12 @@ audit
 ttf-nerd-fonts-symbols
 ttf-nerd-fonts-symbols-mono
 zoxide
+libreoffice-fresh
+mpv
+cronie
+firefox
+rofi-wayland
+grim
+slurp
+wl-clipboard
+swaybg

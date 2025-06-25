@@ -2,19 +2,20 @@
 
 Welcome to your new system.
 
-Most things have been done for you, but theres a few minor changes you need to do.
+Most things have been done for you, but theres a few that couldn't be automated.
 
 1. JetBrains Toolbox
 	Install applications
 	Set zoom to 120% for scaling
+	Change new project directory
 2. Plex Media Server
 	Initialize libraries
 3. Firefox Setup
-	Install Vimium
-	Enable Dark Theme]
+	Install Vimium, Ublock
+	Enable Dark Theme
 4. Research Your Tools
-	Zoxide
-	fzf
-	nvim
+	zoxide, fzf, nvim
+5. Nextcloud Setup
+	http://localhost:8080
 
-You're good to go!
+Enjoy!

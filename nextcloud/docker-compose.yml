@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mariadb:11
+    restart: always
+    volumes:
+      - /home/ash/nextcloud/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+
+  app:
+    image: nextcloud
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    volumes:
+      - /home/ash/nextcloud/html:/var/www/html
+    restart: always
+    environment:
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_HOST: db
