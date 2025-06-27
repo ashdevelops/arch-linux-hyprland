@@ -1,11 +1,11 @@
 configuration {
-    font: "Monospace 17";
+    font: "Monospace 26";
     icon-theme: "Papirus";
     show-icons: true;
 }
 
 window {
-    width: 500px;
+    width: 800px;
     height: 800px;
     border-radius: 8px;  
 }

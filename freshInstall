@@ -4,14 +4,11 @@ set -euo pipefail
 FILE="/etc/nas-credentials"
 if [ ! -f "$FILE" ]; then
   echo "Error: File '$FILE' not found!"
-  echo "You need this to connect to your NAS"
-  echo "Please create it in INI format like below"
-  echo "username=..."
-  echo "password=..."
+  echo "This is mandatory - script will terminate till exists"
   exit 1
 fi
 
-USER="ash"
+USER="a"
 HOME_DIR="/home/$USER"
 START_PATH=$(pwd)
 
@@ -26,9 +23,11 @@ echo 'deny = 5' | sudo tee -a /etc/security/faillock.conf > /dev/null
 echo 'QT_SCALE_FACTOR=1.5' | sudo tee -a /etc/environment
 echo 'STEAM_FORCE_DESKTOPUI_SCALING=1.5' | sudo tee -a /etc/environment
 
-if [[ ! -d "$HOME_DIR/.oh-my-zsh" ]]; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
+#if [[ ! -d "$HOME_DIR/.oh-my-zsh" ]]; then
+#    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#fi
+
+echo 'a ALL=(ALL) NOPASSWD: ALL' | sudo tee /etc/sudoers.d/a_nopasswd_all
 
 mkdir -p "$HOME_DIR/scripts" "$HOME_DIR/recordings" "$HOME_DIR/wallpapers"
 cp -R scripts/* "$HOME_DIR/scripts/"
@@ -40,8 +39,8 @@ sudo chmod +x "$HOME_DIR/scripts/"*
 sudo mkdir -p /mnt/media /mnt/backups /mnt/storage
 
 FSTAB_ENTRIES=$(cat << 'EOF'
-//192.168.0.50/media    /mnt/media     cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=ash,gid=ash,dir_mode=0777,file_mode=0666    0    0
-//192.168.0.50/backups  /mnt/backups   cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=ash,gid=ash,dir_mode=0777,file_mode=0666    0    0
+//192.168.0.50/media    /mnt/media     cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=a,gid=a,dir_mode=0777,file_mode=0666    0    0
+//192.168.0.50/backups  /mnt/backups   cifs    credentials=/etc/nas-credentials,vers=3.0,iocharset=utf8,noperm,uid=a,gid=a,dir_mode=0777,file_mode=0666    0    0
 UUID=6b904ef3-eae5-4981-bcc0-9dfea493613b    /mnt/storage    ext4    defaults,noatime                                                                      0    2
 EOF
 )
@@ -76,13 +75,14 @@ yay -S --noconfirm \
     game-devices-udev \
     neofetch \
     wlroots \
-    ttf-firacode-nerd
+    ttf-firacode-nerd \
+    vescord
 
 curl -Lo - https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz | tar -xz && sudo install speedtest /usr/local/bin/ && rm -f speedtest
 
 sudo systemctl enable --now plexmediaserver
 sudo systemctl enable --now docker
-
+sudo systemctl enable --now bluetooth
 chsh -s /bin/zsh
 sudo usermod -aG input,docker "$USER"
 
@@ -96,7 +96,7 @@ sudo docker run -d -p 9000:9000 --name portainer \
 
 sudo docker update --restart unless-stopped portainer
 
-CRON_JOB="0 */4 * * * /home/ash/scripts/plexDbBackup"
+CRON_JOB="0 */4 * * * /home/$USER/scripts/plexDbBackup"
 crontab -l 2>/dev/null | grep -Fxq "$CRON_JOB" || (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
 
 gsettings set org.gnome.desktop.peripherals.keyboard delay 250
@@ -138,7 +138,7 @@ mkdir -p ~/.config/nvim/lua/plugins && git clone https://github.com/folke/lazy.n
 
 cp -R /mnt/backups/.ssh ~/ 
 
-#xargs -a hostsBlock -I{} echo "127.0.0.1 {}" | sudo tee -a /etc/hosts > /dev/null
+xargs -a "$START_PATH/hostsBlock" -I{} echo "127.0.0.1 {}" | sudo tee -a /etc/hosts > /dev/null
 
 mkdir -p ~/nextcloud/html
 sudo chown -R 33:33 ~/nextcloud/html
@@ -151,16 +151,24 @@ cd ~/nextcloud
 
 sudo docker-compose up -d
 
-(crontab -l 2>/dev/null; echo "0 * * * * rsync -a --delete /home/ash/nextcloud/ /mnt/backups/nextcloud/") | crontab -
+(crontab -l 2>/dev/null; echo "0 * * * * rsync -a --delete /home/a/nextcloud/ /mnt/backups/nextcloud/") | crontab -
 
-echo "Almost there..."
-sudo docker exec -i $(sudo docker ps --filter "ancestor=nextcloud" --format "{{.Names}}" | head -n1) \
-sh -c 'FILE="/var/www/html/config/config.php"; \
-[ -f "$FILE" ] || echo "<?php\n\$CONFIG = array (\n  '\''trusted_domains'\'' => array (),\n);" > "$FILE"; \
-sed -i "/'\''trusted_domains'\'' => *array (/a\
-    1 => '\''192.168.0.57'\'',\
-    2 => '\''192.168.0.57:8080'\''," "$FILE"'
+echo "===================================================================================="
 
+#sudo docker exec -i $(sudo docker ps --filter "ancestor=nextcloud" --format "{{.Names}}" | head -n1) \
+#sh -c 'FILE="/var/www/html/config/config.php"; \
+#[ -f "$FILE" ] || echo "<?php\n\$CONFIG = array (\n  '\''trusted_domains'\'' => array (),\n);" > "$FILE"; \
+#sed -i "/'\''trusted_domains'\'' => *array (/a\
+#    1 => '\''192.168.0.57'\'',\
+#    2 => '\''192.168.0.57:8080'\''," "$FILE"'
+
+sudo grub-mkfont -s 32 -o /boot/grub/fonts/DejaVuSansMono32.pf2 /usr/share/fonts/TTF/DejaVuSansMono.ttf && sudo sed -i '/^GRUB_FONT=/d;/^GRUB_GFXMODE=/d;/^GRUB_GFXPAYLOAD_LINUX=/d' /etc/default/grub && echo -e '\nGRUB_FONT=/boot/grub/fonts/DejaVuSansMono32.pf2\nGRUB_GFXMODE=1920x1080\nGRUB_GFXPAYLOAD_LINUX=keep' | sudo tee -a /etc/default/grub && sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+SSH_DIR="$HOME_DIR/.ssh"
+
+chmod 700 "$SSH_DIR"
+find "$SSH_DIR" -type f ! -name "*.pub" -exec chmod 600 {} \;
+find "$SSH_DIR" -type f -name "*.pub" -exec chmod 644 {} \;
 
 speedtest
 
@@ -169,4 +177,4 @@ echo ""
 neofetch
 
 cd $START_PATH
-nvim postInstall
+cat postInstall

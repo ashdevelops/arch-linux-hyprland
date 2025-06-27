@@ -1,18 +1,34 @@
 #!/bin/bash
 set -euo pipefail
 
-USER="ash"
+FILE="/etc/nas-credentials"
+if [ ! -f "$FILE" ]; then
+  echo "Error: File '$FILE' not found!"
+  echo "This is mandatory - script will terminate till exists"
+  exit 1
+fi
+
+USER="a"
 HOME_DIR="/home/$USER"
 START_PATH=$(pwd)
 
-(crontab -l 2>/dev/null; echo "0 * * * * rsync -a --delete /home/ash/nextcloud/ /mnt/backups/nextcloud/") | crontab -
+sudo docker exec -i $(sudo docker ps --filter "ancestor=nextcloud" --format "{{.Names}}" | head -n1) \
+sh -c 'FILE="/var/www/html/config/config.php"; \
+[ -f "$FILE" ] || echo "<?php\n\$CONFIG = array (\n  '\''trusted_domains'\'' => array (),\n);" > "$FILE"; \
+sed -i "/'\''trusted_domains'\'' => *array (/a\
+    1 => '\''192.168.0.57'\'',\
+    2 => '\''192.168.0.57:8080'\''," "$FILE"'
 
-docker exec -i nextcloud-app-1 sh -c "sed -i \"/'trusted_domains' => *array (/a\\
-    1 => '192.168.0.57',\\
-    2 => '192.168.0.57:8080',\" /var/www/html/config/config.php"
-    
+SSH_DIR="$HOME_DIR/.ssh"
+
+chmod 700 "$SSH_DIR"
+find "$SSH_DIR" -type f ! -name "*.pub" -exec chmod 600 {} \;
+find "$SSH_DIR" -type f -name "*.pub" -exec chmod 644 {} \;
+
 speedtest
 
+echo "===================================================================================="
+echo ""
 neofetch
 
 cd $START_PATH
